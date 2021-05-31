@@ -1,7 +1,4 @@
 import random
-import copy
-
-
 class Chromosome:
     def __init__(self, length):
         self.chromosome_cell = []
@@ -30,7 +27,7 @@ class Chromosome:
         for i in range(200):
             each_chromosome = self.build_chromosome()
             self.chromosomes.append(each_chromosome)
-        print(self.chromosomes)
+        # print(self.chromosomes)
         return self.chromosomes
 
 
@@ -93,7 +90,6 @@ class Game:
             for j in range (len(self.chromosomes[i])):
                 string_chromosome += str(self.chromosomes[i][j])
             population.append([string_chromosome, self.heuristic.get_score(string_chromosome)])
-        print(population)
         population = self.sort(population)
         return population
 
@@ -104,42 +100,59 @@ class Game:
                     temp = population[j]
                     population[j] = population[j+1]
                     population[j+1] = temp
-        print(population)
+        # print(population)
         return population
 
     def choose(self, population):
         children = []
         for i in range (int(len(population)/2)):
             children.append(population[i])
-        self.crossOver(children)
+        children, grandchildren = self.cross_over(children)
+        self.next_generation(children, grandchildren)
         return children
 
     def build_children(self, population):
         self.choose(population)
 
-    def crossOver(self, children):
-        chromosome1 = random.randint(0, len(children))
-        chromosome2 = random.randint(0, len(children))
-        print(children[chromosome1], children[chromosome2])
+    def cross_over(self, children):
+        random1 = random.randint(0, len(children))
+        random2 = random.randint(0, len(children))
+        chromosome1 = list(children[random1][0])
+        chromosome2 = list(children[random2][0])
         for i in range (int(len(children[0][0])/2), len(children[0][0])):
-            children[chromosome1][0], children[chromosome2][0] = children[chromosome2][0] , children[chromosome1][0]
-        children[0] = ''.join(children[0])
-        children[0] = ''.join(children[0])
-        print(chromosome1, chromosome2)
-        print(children[chromosome1], children[chromosome2])
+            chromosome1[i], chromosome2[i] = chromosome2[i], chromosome1[i]
+        chromosome1 = ''.join(chromosome1)
+        chromosome2 = ''.join(chromosome2)
+        grandchildren = children.copy()
+        print(children[random1], children[random2])
+        print([chromosome1, h.get_score(chromosome1)], [chromosome2, h.get_score(chromosome2)])
+        grandchildren.remove(grandchildren[random1])
+        grandchildren.remove(grandchildren[random1])
+        grandchildren.append([chromosome1, h.get_score(chromosome1)])
+        grandchildren.append([chromosome2, h.get_score(chromosome2)])
+        # print(children)
+        # print(grandchildren)
 
-        #     temp1 = chromosome1[0]
+        return children, grandchildren
 
-
+    def next_generation(self, children, grandchildren):
+        for i in range (len(children)):
+            grandchildren.append(children[i])
+        grandchildren = self.sort(grandchildren)
+        children = []
+        for i in range (int(len(grandchildren)/2)):
+            children.append(grandchildren[i])
+        print(children)
 
 
 
 
 if __name__ == '__main__':
-    g = Heuristic(["_M__GG_____G_"])
-    g.load_next_level()
-    # print(g.get_score("0001000000100"))
+    h = Heuristic(["_M__GG_____G_"])
+    h.load_next_level()
     Chro = Chromosome(13)
-    game = Game(g, Chro)
+    game = Game(h, Chro)
     population = game.score_all()
     game.build_children(population)
+
+    
