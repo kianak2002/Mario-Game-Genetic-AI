@@ -41,13 +41,10 @@ class Heuristic:
         self.current_level_index += 1
         self.current_level_len = len(self.levels[self.current_level_index])
 
-    # def extra_jumps(self, steps, action):
-        # if action == "1":
-        #     steps -= 0.5
-
     def get_score(self, actions):
         current_level = self.levels[self.current_level_index]
         steps, max = 0, 0
+        win = True
         for i in range(self.current_level_len):
             current_step = current_level[i]
             if current_step == '_':
@@ -67,13 +64,14 @@ class Heuristic:
                 steps += 1
             else:
                 steps = 0
+                win = False
             if max < steps:
                 max = steps
         if steps == self.current_level_len:
             max += 5
         if actions[len(actions)-1] == '1':
             max += 1
-        return max
+        return max, win
 
 class Game:
     def __init__(self, heuristic, chromosome):
@@ -100,40 +98,33 @@ class Game:
                     temp = population[j]
                     population[j] = population[j+1]
                     population[j+1] = temp
-        # print(population)
         return population
 
-    def choose(self, population):
-        children = []
-        for i in range (int(len(population)/2)):
-            children.append(population[i])
-        children, grandchildren = self.cross_over(children)
-        self.next_generation(children, grandchildren)
+    def choose(self, children):
+        grandchildren = []
+        for i in range (int(len(children)/2)):
+            child1, child2 = self.cross_over(children)
+            grandchildren.append(child1)
+            grandchildren.append(child2)
+        children = self.next_generation(children, grandchildren)
+        self.game_over(children)
         return children
 
-    def build_children(self, population):
-        self.choose(population)
+    def build_children(self, population, children):
+        for i in range (int(len(population)/2)):
+            children.append(population[i])
+        self.choose(children)
 
     def cross_over(self, children):
-        random1 = random.randint(0, len(children))
-        random2 = random.randint(0, len(children))
+        random1 = random.randint(0, len(children)-1)
+        random2 = random.randint(0, len(children)-1)
         chromosome1 = list(children[random1][0])
         chromosome2 = list(children[random2][0])
         for i in range (int(len(children[0][0])/2), len(children[0][0])):
             chromosome1[i], chromosome2[i] = chromosome2[i], chromosome1[i]
         chromosome1 = ''.join(chromosome1)
         chromosome2 = ''.join(chromosome2)
-        grandchildren = children.copy()
-        print(children[random1], children[random2])
-        print([chromosome1, h.get_score(chromosome1)], [chromosome2, h.get_score(chromosome2)])
-        grandchildren.remove(grandchildren[random1])
-        grandchildren.remove(grandchildren[random1])
-        grandchildren.append([chromosome1, h.get_score(chromosome1)])
-        grandchildren.append([chromosome2, h.get_score(chromosome2)])
-        # print(children)
-        # print(grandchildren)
-
-        return children, grandchildren
+        return [chromosome1, h.get_score(chromosome1)], [chromosome2, h.get_score(chromosome2)]
 
     def next_generation(self, children, grandchildren):
         for i in range (len(children)):
@@ -142,9 +133,28 @@ class Game:
         children = []
         for i in range (int(len(grandchildren)/2)):
             children.append(grandchildren[i])
-        print(children)
+        return children
 
+    def game_over(self, children):
+        max_score = 0
+        for i in range (len(h.levels[0])):
+            if h.levels[0][i] == '_' or h.levels[0][i] == 'L':
+                max_score += 1
+            elif h.levels[0][i] == 'G':
+                if i>0 and h.levels[0][i-1] == 'G':
+                    max_score += 1
+                else:
+                    max_score += 3
+            elif h.levels[0][i] == 'M':
+                max_score += 3
+        max_score += 1
 
+        print(children[0][1][0])
+        if children[0][1][0] == max_score and children[0][1][1] == True:
+            print('YOU WIN WITH', max_score, 'SCORE :)')
+            print(children[0][0])
+        else:
+            self.choose(children)
 
 
 if __name__ == '__main__':
@@ -153,6 +163,5 @@ if __name__ == '__main__':
     Chro = Chromosome(13)
     game = Game(h, Chro)
     population = game.score_all()
-    game.build_children(population)
+    game.build_children(population, [])
 
-    
