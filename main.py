@@ -1,5 +1,5 @@
 import random
-from matplotlib import pyplot
+from matplotlib import pyplot as plt
 
 class Chromosome:
     def __init__(self, length):
@@ -143,6 +143,7 @@ class Game:
 
     def game_over(self, children):
         check = 0
+        x = []
         average = self.heuristic_avg(children)
         if average - self.average < 0.000001:
             for i in range(len(children)):
@@ -150,40 +151,25 @@ class Game:
                     print('YOU WIN WITH', children[i][1][0], 'SCORE :)')
                     print(children[i][0])
                     check = 1
-                    # pyplot.plot(len(self.avg_plot), self.avg_plot)
                     break
             if check == 0:
                 print('YOU LOSE WITH', children[0][1][0], 'SCORE :(')
                 print(children[0][0])
                 check = 1
+            for i in range(len(self.avg_plot)):
+                x.append(int(i))
+            # print(x)
+            plt.plot(x, self.avg_plot)
+            plt.xlabel('generation')
+            plt.ylabel('heuristic average')
+            # plt.title('My first graph!')
+            plt.show()
         self.average = average
         if check == 0:
             self.choose(children)
-        # print(len(children), "yup")
-        # max_score = 0
-        # for i in range(len(h.levels[0])):
-        #     if h.levels[0][i] == '_' or h.levels[0][i] == 'L':
-        #         max_score += 1
-        #     elif h.levels[0][i] == 'G':
-        #         if i > 0 and h.levels[0][i - 1] != 'G':
-        #             max_score += 3
-        #         else:
-        #             max_score += 1
-        #     elif h.levels[0][i] == 'M':
-        #         max_score += 3
-        # max_score += 1
-        # print("maxxxxxx", max_score)
 
-        # print(children[0][1][0])
-        # if children[0][1][0] == max_score and children[0][1][1] == True:
-        #     print('YOU WIN WITH', max_score, 'SCORE :)')
-        #     print(children[0][0])
-        # else:
-        #     self.choose(children)
-        # self.average = average
 
     def mutation(self, grandchildren):
-        # print(grandchildren)
         k = random.randint(0, len(grandchildren[0][0]))  # change how many cells
         for j in range(len(grandchildren)):
             for i in range(k):
