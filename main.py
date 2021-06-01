@@ -103,12 +103,14 @@ class Game:
         return population
 
     def choose(self, children):
+        print(len(children), "hhh")
         grandchildren = []
         for i in range (int(len(children)/2)):
             child1, child2 = self.cross_over(children)
             grandchildren.append(child1)
             grandchildren.append(child2)
         children = self.next_generation(children, grandchildren)
+        self.mutation(grandchildren)
         self.game_over(children)
         return children
 
@@ -138,18 +140,20 @@ class Game:
         return children
 
     def game_over(self, children):
+        print(len(children), "yup")
         max_score = 0
         for i in range(len(h.levels[0])):
             if h.levels[0][i] == '_' or h.levels[0][i] == 'L':
                 max_score += 1
             elif h.levels[0][i] == 'G':
-                if i > 0 and h.levels[0][i-1] == 'G':
-                    max_score += 1
-                else:
+                if i > 0 and h.levels[0][i-1] != 'G':
                     max_score += 3
+                else:
+                    max_score += 1
             elif h.levels[0][i] == 'M':
                 max_score += 3
         max_score += 1
+        print("maxxxxxx", max_score)
 
         print(children[0][1][0])
         if children[0][1][0] == max_score and children[0][1][1] == True:
@@ -158,7 +162,19 @@ class Game:
         else:
             self.choose(children)
 
-    # def heuristic_avg(self, children):
+    def mutation(self, grandchildren):
+        # print(grandchildren)
+        k = random.randint(0, len(grandchildren[0][0]))##change how many cells
+        for j in range(len(grandchildren)):
+            for i in range(k):
+                yes_no = random.choices([0, 1], weights=(80, 20), k= 1) #yes or no
+                if yes_no == 1:
+                    change = random.randint(0, len(grandchildren[0][0]))
+                    grandchildren[j][0][change] = 0##reset to zero
+        # print(grandchildren, "changedddd")
+
+
+    # def heuristic_avg(self, children, grandchildren):
 
 
 
@@ -172,6 +188,7 @@ if __name__ == '__main__':
         h = Heuristic([content])
         # h = Heuristic(["_M__GG_____G_"])
         h.load_next_level()
+        print(len(content))
         Chro = Chromosome(len(content))
         game = Game(h, Chro)
         population = game.score_all()
