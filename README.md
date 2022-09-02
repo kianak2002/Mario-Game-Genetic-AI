@@ -1,3 +1,5 @@
+It is a course project for Artificial Intelligence course instructed by [Dr.Behnam Roshanfekr](https://scholar.google.fr/citations?user=uU25R5IAAAAJ&hl=en).
+
 ### General Knowledge About Project
 Mario Game With Genetic Algorithm
 
