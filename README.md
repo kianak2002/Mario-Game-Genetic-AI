@@ -8,9 +8,9 @@ Using genetic algorithm to play the Mario game, jumping the blocks, not hitting 
 ![image](https://user-images.githubusercontent.com/61980014/188199117-70571f93-d93f-4004-b3b0-8c8e536f9393.png)
 
 
+## Report
 
-
-
+report can be found [here](https://github.com/kianak2002/AIproject/blob/main/proje2.pdf) in persian.
 
 
 ### How it is implemented
