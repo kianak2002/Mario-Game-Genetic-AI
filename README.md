@@ -1,3 +1,4 @@
+### General Knowledge About Project
 Mario Game With Genetic Algorithm
 
 Using genetic algorithm to play the Mario game, jumping the blocks, not hitting them. It starts with 200 chromosomes and with heuristic scoring function, cross-over, and mutation, reaches to converging.
@@ -10,7 +11,7 @@ Using genetic algorithm to play the Mario game, jumping the blocks, not hitting 
 
 
 
-
+### How it is implemented
 import random
 class Chromosome:
     def __init__(self, length):
