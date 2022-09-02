@@ -1,3 +1,15 @@
+Mario Game With Genetic Algorithm
+
+Using genetic algorithm to play the Mario game, jumping the blocks, not hitting them. It starts with 200 chromosomes and with heuristic scoring function, cross-over, and mutation, reaches to converging.
+(M is Mushroom and has extra score, G is Gumpa and it is ground enemy, L is Lakipo and it is overhead enemy).
+![image](https://user-images.githubusercontent.com/61980014/188198854-bfd88596-b37a-46db-8412-916dc996e3de.png)
+
+
+
+
+
+
+
 import random
 class Chromosome:
     def __init__(self, length):
